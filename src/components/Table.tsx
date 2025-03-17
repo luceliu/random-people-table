@@ -3,6 +3,7 @@ import { Person } from "../types/Person";
 import PersonModal from "./PersonModal";
 import ItemsPerPageSelect from "./ItemsPerPageSelect";
 import { formatDate, formatSalary } from "../utils/formatters";
+import { useModal } from "../hooks/useModal";
 
 interface ITableProps {
   data: Person[];
@@ -70,17 +71,26 @@ const Table: React.FunctionComponent<ITableProps> = ({ data }) => {
   };
 
   // Person details modal
-  const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // const handleRowClick = (person: Person) => {
+  //   setSelectedPerson(person);
+  //   setIsModalOpen(true);
+  // };
+
+  // const handleCloseModal = () => {
+  //   setIsModalOpen(false);
+  //   setSelectedPerson(null);
+  // };
+  const {
+    isOpen,
+    data: selectedPerson,
+    openModal,
+    closeModal,
+  } = useModal<Person>();
   const handleRowClick = (person: Person) => {
-    setSelectedPerson(person);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedPerson(null);
+    openModal(person);
   };
 
   // # items per page
@@ -93,8 +103,8 @@ const Table: React.FunctionComponent<ITableProps> = ({ data }) => {
 
   return (
     <div className="flex flex-col items-center justify-center w-full overflow-x-hidden">
-      {isModalOpen && selectedPerson && (
-        <PersonModal person={selectedPerson} onClose={handleCloseModal} />
+      {isOpen && selectedPerson && (
+        <PersonModal person={selectedPerson} onClose={closeModal} />
       )}
       <div className="w-[90%] flex m-4 justify-end items-baseline space-x-2">
         <ItemsPerPageSelect
