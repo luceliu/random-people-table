@@ -1,4 +1,5 @@
 import { useTable } from "../hooks/useTable";
+import ItemsPerPageSelect from "./ItemsPerPageSelect";
 
 export interface TableColumn<T> {
   header: string;
@@ -40,17 +41,11 @@ function Table<T>({
   return (
     <div className="flex flex-col items-center justify-center w-full overflow-x-hidden">
       <div className="w-[90%] flex m-4 justify-end items-baseline space-x-2">
-        <select
+        <ItemsPerPageSelect
           value={itemsPerPage}
-          onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
-          className="px-2 py-1 border rounded"
-        >
-          {itemsPerPageOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+          handleOptionSelect={handleItemsPerPageChange}
+          options={itemsPerPageOptions}
+        />
         <span>items per page</span>
       </div>
       <div className="w-[90%] overflow-x-auto">
@@ -108,7 +103,7 @@ function Table<T>({
             of <span className="font-semibold">{data.length}</span> entries
           </span>
         </div>
-        <div className="flex space-x-2">
+        <div className="flex space-x-3 items-center">
           <button
             onClick={handlePreviousPage}
             disabled={currentPage === 1}
@@ -120,6 +115,10 @@ function Table<T>({
           >
             Previous
           </button>
+          <span className="w-16 text-center">
+            Page{" "}
+            <span className="text-blue-600 font-semibold">{currentPage}</span>
+          </span>
           <button
             onClick={handleNextPage}
             disabled={currentPage === totalPages}

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Person } from "../types/Person";
-import { formatSalary } from "../utils/formatters";
+import { formatDate, formatSalary } from "../utils/formatters";
 
 interface IPersonModalProps {
   person: Person;
@@ -28,11 +28,6 @@ const PersonModal: React.FunctionComponent<IPersonModalProps> = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onClose]);
-
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString();
-  };
 
   return (
     <div
