@@ -1,18 +1,16 @@
 import { useState } from "react";
 import { Person } from "../types/Person";
 import PersonModal from "./PersonModal";
+import ItemsPerPageSelect from "./ItemsPerPageSelect";
 
 interface ITableProps {
   data: Person[];
-  itemsPerPage: number;
 }
 
-const Table: React.FunctionComponent<ITableProps> = ({
-  data,
-  itemsPerPage,
-}) => {
+const Table: React.FunctionComponent<ITableProps> = ({ data }) => {
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
   const handlePreviousPage = () => {
@@ -84,6 +82,12 @@ const Table: React.FunctionComponent<ITableProps> = ({
     setSelectedPerson(null);
   };
 
+  // # items per page
+  const handleItemsPerPageChange = (rows: number) => {
+    setItemsPerPage(rows);
+    setCurrentPage(1);
+  };
+
   const currentData = getCurrentPageData();
 
   return (
@@ -91,6 +95,14 @@ const Table: React.FunctionComponent<ITableProps> = ({
       {isModalOpen && selectedPerson && (
         <PersonModal person={selectedPerson} onClose={handleCloseModal} />
       )}
+      <div className="w-[80%] flex justify-end items-baseline space-x-2">
+        <ItemsPerPageSelect
+          value={itemsPerPage}
+          onChange={handleItemsPerPageChange}
+          options={[10, 25, 50, 100]}
+        />
+        <span>people per page</span>
+      </div>
       <table className="w-[80%] m-4 bg-white border border-gray-300">
         <thead className="bg-gray-100">
           <tr>

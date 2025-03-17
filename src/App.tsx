@@ -46,7 +46,7 @@ function App() {
   return (
     <div className="flex flex-col mx-auto p-4 w-screen overflow-x-auto">
       <h1 className="text-2xl font-bold mb-6">People Directory</h1>
-      <Table data={people} itemsPerPage={10} />
+      <Table data={people} />
     </div>
   );
 }
