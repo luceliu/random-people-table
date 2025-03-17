@@ -1,88 +1,29 @@
-import { useState } from "react";
 import { Person } from "../types/Person";
 import PersonModal from "./PersonModal";
 import ItemsPerPageSelect from "./ItemsPerPageSelect";
 import { formatDate, formatSalary } from "../utils/formatters";
 import { useModal } from "../hooks/useModal";
+import { useTable } from "../hooks/useTable";
 
 interface ITableProps {
   data: Person[];
 }
 
 const Table: React.FunctionComponent<ITableProps> = ({ data }) => {
-  // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-
-  const handlePreviousPage = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  };
-
-  const handleNextPage = () => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-  };
-
-  // Sorting
-  const [sortField, setSortField] = useState<keyof Person | null>(null);
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-
-  const getCurrentPageData = () => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    let sortedData = [...data];
-    if (sortField) {
-      sortedData.sort((a, b) => {
-        const aValue = a[sortField];
-        const bValue = b[sortField];
-
-        // A, B, or A & B are missing:
-        if (!aValue && !bValue) return 0; // if both values are missing, they're equivalent
-        if (!aValue) {
-          return sortDirection === "asc" ? -1 : 1;
-        }
-        if (!bValue) {
-          return sortDirection === "asc" ? 1 : -1;
-        }
-        // both A & B have values:
-        if (typeof aValue === "string" && typeof bValue === "string") {
-          return sortDirection === "asc"
-            ? aValue.localeCompare(bValue)
-            : bValue.localeCompare(aValue);
-        } else {
-          if (aValue < bValue) return sortDirection === "asc" ? -1 : 1;
-          if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
-
-          // if aValue === bValue:
-          return 0;
-        }
-      });
-    }
-    return sortedData.slice(startIndex, endIndex);
-  };
-
-  const handleSort = (field: keyof Person) => {
-    if (sortField === field) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortField(field);
-      setSortDirection("asc");
-    }
-  };
+  const {
+    currentPage,
+    itemsPerPage,
+    totalPages,
+    handlePreviousPage,
+    handleNextPage,
+    sortField,
+    sortDirection,
+    handleSort,
+    handleItemsPerPageChange,
+    currentData,
+  } = useTable<Person>({ data });
 
   // Person details modal
-  // const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // const handleRowClick = (person: Person) => {
-  //   setSelectedPerson(person);
-  //   setIsModalOpen(true);
-  // };
-
-  // const handleCloseModal = () => {
-  //   setIsModalOpen(false);
-  //   setSelectedPerson(null);
-  // };
   const {
     isOpen,
     data: selectedPerson,
@@ -92,14 +33,6 @@ const Table: React.FunctionComponent<ITableProps> = ({ data }) => {
   const handleRowClick = (person: Person) => {
     openModal(person);
   };
-
-  // # items per page
-  const handleItemsPerPageChange = (rows: number) => {
-    setItemsPerPage(rows);
-    setCurrentPage(1);
-  };
-
-  const currentData = getCurrentPageData();
 
   return (
     <div className="flex flex-col items-center justify-center w-full overflow-x-hidden">
