@@ -11,15 +11,9 @@ const Table: React.FunctionComponent<ITableProps> = ({
   data,
   itemsPerPage,
 }) => {
+  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(data.length / itemsPerPage);
-
-  const getCurrentPageData = () => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-
-    return data.slice(startIndex, endIndex);
-  };
 
   const handlePreviousPage = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
@@ -29,6 +23,54 @@ const Table: React.FunctionComponent<ITableProps> = ({
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   };
 
+  // Sorting
+  const [sortField, setSortField] = useState<keyof Person | null>(null);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+
+  const getCurrentPageData = () => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    let sortedData = [...data];
+    if (sortField) {
+      sortedData.sort((a, b) => {
+        const aValue = a[sortField];
+        const bValue = b[sortField];
+
+        // A, B, or A & B are missing:
+        if (!aValue && !bValue) return 0; // if both values are missing, they're equivalent
+        if (!aValue) {
+          return sortDirection === "asc" ? -1 : 1;
+        }
+        if (!bValue) {
+          return sortDirection === "asc" ? 1 : -1;
+        }
+        // both A & B have values:
+        if (typeof aValue === "string" && typeof bValue === "string") {
+          return sortDirection === "asc"
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+        } else {
+          if (aValue < bValue) return sortDirection === "asc" ? -1 : 1;
+          if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
+
+          // if aValue === bValue:
+          return 0;
+        }
+      });
+    }
+    return sortedData.slice(startIndex, endIndex);
+  };
+
+  const handleSort = (field: keyof Person) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
+    }
+  };
+
+  // Person details modal
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -52,11 +94,36 @@ const Table: React.FunctionComponent<ITableProps> = ({
       <table>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>DOB</th>
-            <th>Email</th>
-            <th>Verified</th>
-            <th>Salary</th>
+            <th
+              className="py-2 px-4 border-b cursor-pointer hover:bg-gray-200"
+              onClick={() => handleSort("name")}
+            >
+              Name
+            </th>
+            <th
+              className="py-2 px-4 border-b cursor-pointer hover:bg-gray-200"
+              onClick={() => handleSort("dob")}
+            >
+              DOB
+            </th>
+            <th
+              className="py-2 px-4 border-b cursor-pointer hover:bg-gray-200"
+              onClick={() => handleSort("email")}
+            >
+              Email
+            </th>
+            <th
+              className="py-2 px-4 border-b cursor-pointer hover:bg-gray-200"
+              onClick={() => handleSort("verified")}
+            >
+              Verified
+            </th>
+            <th
+              className="py-2 px-4 border-b cursor-pointer hover:bg-gray-200"
+              onClick={() => handleSort("salary")}
+            >
+              Salary
+            </th>
           </tr>
         </thead>
         <tbody>
