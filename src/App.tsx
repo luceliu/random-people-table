@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Table from "./components/Table";
 import { PeopleData, Person } from "./types/Person";
+import PersonTable from "./components/PersonTable";
 
 function App() {
   const [people, setPeople] = useState<Person[]>([]);
@@ -46,7 +46,7 @@ function App() {
   return (
     <div className="flex flex-col mx-auto p-4">
       <h1 className="text-2xl font-bold mb-6">People Directory</h1>
-      <Table data={people} />
+      <PersonTable data={people} />
     </div>
   );
 }
