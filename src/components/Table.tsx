@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { Person } from "../types/Person";
+import PersonModal from "./PersonModal";
 
 interface ITableProps {
   data: Person[];
-  itemsPerPage?: number;
+  itemsPerPage: number;
 }
 
 const Table: React.FunctionComponent<ITableProps> = ({
   data,
-  itemsPerPage = 50,
+  itemsPerPage,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(data.length / itemsPerPage);
@@ -28,10 +29,26 @@ const Table: React.FunctionComponent<ITableProps> = ({
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   };
 
+  const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleRowClick = (person: Person) => {
+    setSelectedPerson(person);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedPerson(null);
+  };
+
   const currentData = getCurrentPageData();
 
   return (
     <div>
+      {isModalOpen && selectedPerson && (
+        <PersonModal person={selectedPerson} onClose={handleCloseModal} />
+      )}
       <table>
         <thead>
           <tr>
@@ -44,7 +61,11 @@ const Table: React.FunctionComponent<ITableProps> = ({
         </thead>
         <tbody>
           {currentData.map((person) => (
-            <tr key={person.id}>
+            <tr
+              key={person.id}
+              onClick={() => handleRowClick(person)}
+              className="cursor-pointer hover:bg-gray-200"
+            >
               <td>{person.name}</td>
               <td>{person.dob}</td>
 
@@ -71,14 +92,14 @@ const Table: React.FunctionComponent<ITableProps> = ({
           <button
             onClick={handlePreviousPage}
             disabled={currentPage === 1}
-            className="border"
+            className="border cursor-pointer"
           >
             Previous
           </button>
           <button
             onClick={handleNextPage}
             disabled={currentPage === totalPages}
-            className="border"
+            className="border cursor-pointer"
           >
             Next
           </button>
