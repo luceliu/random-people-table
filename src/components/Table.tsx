@@ -87,12 +87,12 @@ const Table: React.FunctionComponent<ITableProps> = ({
   const currentData = getCurrentPageData();
 
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center">
       {isModalOpen && selectedPerson && (
         <PersonModal person={selectedPerson} onClose={handleCloseModal} />
       )}
-      <table>
-        <thead>
+      <table className="w-[80%] m-4 bg-white border border-gray-300">
+        <thead className="bg-gray-100">
           <tr>
             <th
               className="py-2 px-4 border-b cursor-pointer hover:bg-gray-200"
@@ -138,40 +138,64 @@ const Table: React.FunctionComponent<ITableProps> = ({
               onClick={() => handleRowClick(person)}
               className="cursor-pointer hover:bg-gray-200"
             >
-              <td>{person.name}</td>
-              <td>{person.dob}</td>
+              <td className="py-2 px-4 border-b">{person.name}</td>
+              <td className="py-2 px-4 border-b">{person.dob}</td>
 
-              <td>{person.email}</td>
-              <td>
-                <span>{person.verified ? "Yes" : "No"}</span>
+              <td className="py-2 px-4 border-b">{person.email}</td>
+              <td className="py-2 px-4 border-b">
+                <span
+                  className={`px-2 py-1 rounded-full text-xs ${
+                    person.verified
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  {person.verified ? "Yes" : "No"}
+                </span>
               </td>
-              <td>${person.salary}</td>
+              <td className="py-2 px-4 border-b">
+                ${person.salary.toLocaleString()}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
 
       {/* footer */}
-      <div className="flex justify-between items-center">
+      <div className="flex w-[80%] justify-between items-start">
         <div>
-          <span>
-            Showing <span>{(currentPage - 1) * itemsPerPage + 1}</span> to{" "}
-            <span>{Math.min(currentPage * itemsPerPage, data.length)}</span> of{" "}
-            <span>{data.length}</span> entries
+          <span className="text-sm text-gray-700">
+            Showing{" "}
+            <span className="font-semibold">
+              {(currentPage - 1) * itemsPerPage + 1}
+            </span>{" "}
+            to{" "}
+            <span className="font-semibold">
+              {Math.min(currentPage * itemsPerPage, data.length)}
+            </span>{" "}
+            of <span className="font-semibold">{data.length}</span> entries
           </span>
         </div>
-        <div>
+        <div className="flex space-x-2">
           <button
             onClick={handlePreviousPage}
             disabled={currentPage === 1}
-            className="border cursor-pointer"
+            className={`px-3 py-1 border cursor-pointer rounded ${
+              currentPage === 1
+                ? "bg-gray-100 text-gray-400"
+                : "bg-white text-blue-600 hover:bg-blue-50"
+            }`}
           >
             Previous
           </button>
           <button
             onClick={handleNextPage}
             disabled={currentPage === totalPages}
-            className="border cursor-pointer"
+            className={`px-3 py-1 border cursor-pointer rounded ${
+              currentPage === totalPages
+                ? "bg-gray-100 text-gray-400"
+                : "bg-white text-blue-600 hover:bg-blue-50"
+            }`}
           >
             Next
           </button>
