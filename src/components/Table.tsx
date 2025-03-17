@@ -98,31 +98,36 @@ const Table: React.FunctionComponent<ITableProps> = ({
               className="py-2 px-4 border-b cursor-pointer hover:bg-gray-200"
               onClick={() => handleSort("name")}
             >
-              Name
+              Name{" "}
+              {sortField === "name" && (sortDirection === "asc" ? "▲" : "▼")}
             </th>
             <th
               className="py-2 px-4 border-b cursor-pointer hover:bg-gray-200"
               onClick={() => handleSort("dob")}
             >
-              DOB
+              DOB {sortField === "dob" && (sortDirection === "asc" ? "▲" : "▼")}
             </th>
             <th
               className="py-2 px-4 border-b cursor-pointer hover:bg-gray-200"
               onClick={() => handleSort("email")}
             >
-              Email
+              Email{" "}
+              {sortField === "email" && (sortDirection === "asc" ? "▲" : "▼")}
             </th>
             <th
               className="py-2 px-4 border-b cursor-pointer hover:bg-gray-200"
               onClick={() => handleSort("verified")}
             >
-              Verified
+              Verified{" "}
+              {sortField === "verified" &&
+                (sortDirection === "asc" ? "▲" : "▼")}
             </th>
             <th
               className="py-2 px-4 border-b cursor-pointer hover:bg-gray-200"
               onClick={() => handleSort("salary")}
             >
-              Salary
+              Salary{" "}
+              {sortField === "salary" && (sortDirection === "asc" ? "▲" : "▼")}
             </th>
           </tr>
         </thead>
